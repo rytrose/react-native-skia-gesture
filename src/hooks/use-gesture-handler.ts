@@ -16,12 +16,13 @@ type UseGestureHandlerParams<ContextType> = {
     extendedTouchInfo: ExtendedTouchInfo & TranslationInfo,
     context: ContextType
   ) => void;
+  pathContains?: any;
 };
 
 const useGestureHandler = <ContextType>(
   gestureHandlers: UseGestureHandlerParams<ContextType>
 ) => {
-  const { onStart, onActive, onEnd } = gestureHandlers;
+  const { onStart, onActive, onEnd, pathContains } = gestureHandlers;
 
   const context = useValue<ContextType>({} as any);
 
@@ -53,6 +54,7 @@ const useGestureHandler = <ContextType>(
     onStart: handleStart,
     onActive: handleActive,
     onEnd: handleEnd,
+    pathContains: pathContains,
   };
 };
 

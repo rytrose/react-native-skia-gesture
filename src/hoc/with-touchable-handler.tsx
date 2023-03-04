@@ -26,6 +26,7 @@ export type TouchableHandlerProps = {
   onActive: (touchInfo: ExtendedTouchInfo & TranslationInfo) => void;
   onEnd: (touchInfo: ExtendedTouchInfo & TranslationInfo) => void;
   touchablePath: SkPath | SkiaValue<SkPath>;
+  pathContains: any;
 };
 
 type WithTouchableHandlerProps<T> = SkiaProps<T> &
@@ -56,6 +57,7 @@ const withTouchableHandler = <T,>(
     onActive: onActiveProp,
     onEnd: onEndProp,
     touchablePath,
+    pathContains,
     ...props
   }: WithTouchableHandlerProps<T>) => {
     const id = useId();
@@ -93,13 +95,18 @@ const withTouchableHandler = <T,>(
 
     const isPointInPath = useCallback(
       (point: Vector) => {
+        let path;
         if (touchablePath) {
-          return unwrapAnimatedValue(touchablePath).contains(point.x, point.y);
+          path = unwrapAnimatedValue(touchablePath);
+        } else {
+          path = getSkiaPath(Component.name, props);
+          if (!path) {
+            throw Error('No touchablePath provided');
+          }
         }
 
-        const path = getSkiaPath(Component.name, props);
-        if (!path) {
-          throw Error('No touchablePath provided');
+        if (pathContains) {
+          return pathContains(path, point);
         }
         return path.contains(point.x, point.y);
       },
