@@ -60,6 +60,7 @@ const withTouchableHandler = <T,>(
     pathContains,
     ...props
   }: WithTouchableHandlerProps<T>) => {
+
     const id = useId();
     const ref = useTouchHandlerContext();
 
@@ -115,13 +116,13 @@ const withTouchableHandler = <T,>(
 
     useEffect(() => {
       ref.current = {
+        ...ref.current,
         [`id:${id}`]: {
           isPointInPath,
           onStart,
           onActive,
           onEnd,
         },
-        ...ref.current,
       } as any;
 
       return () => {
